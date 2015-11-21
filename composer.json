@@ -19,7 +19,7 @@
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
 	"kartik-v/yii2-widget-select2": "*",
-	"2amigos/yii2-date-time-picker-widget" : "~1.0",
+	"2amigos/yii2-date-picker-widget" : "~1.0",
         "dompdf/dompdf" : "0.6.*"
     },
     "require-dev": {

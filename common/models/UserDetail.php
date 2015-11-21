@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "{{%user_detail}}".
@@ -12,13 +13,17 @@ use Yii;
  * @property string $reg_no
  * @property integer $gender
  * @property string $dob
- * @property string $college_and_address
+ * @property string $exam_center_id
  * @property string $telephone
  * @property integer $medium
  * @property string $academic_year
+ * @property integer $payment_mathod
+ * @property string $payment_date
+ * @property string $bank_branch
  *
  * @property User $user
  * @property Batch $batch
+ * @property BatchExamCenters $examCenter
  */
 class UserDetail extends \yii\db\ActiveRecord {
 
@@ -31,6 +36,9 @@ class UserDetail extends \yii\db\ActiveRecord {
     const MEDIUM_ENGLISH = 3;
     //
     const SCENARIO_REGISTRATION = 'registration';
+    //payment methods
+    const PAYMENT_M_ONLINE = 1;
+    const PAYMENT_M_BANK = 2;
 
     private $_batch = null;
     public $confirm;
@@ -38,64 +46,88 @@ class UserDetail extends \yii\db\ActiveRecord {
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%user_detail}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['user_id', 'gender', 'medium'], 'integer'],
-            [['initials', 'gender', 'dob', 'college_and_address', 'telephone', 'medium'], 'required'],
-            [['dob', 'academic_year'], 'safe'],
+            [['user_id', 'gender', 'medium', 'exam_center_id', 'payment_mathod'], 'integer'],
+            [['initials', 'gender', 'dob', 'telephone', 'medium', 'exam_center_id', 'payment_mathod'], 'required'],
+            [['academic_year', 'payment_date'], 'safe'],
             [['initials'], 'string', 'max' => 150],
-            [['reg_no'], 'string', 'max' => 50],
-            [['college_and_address'], 'string', 'max' => 250],
+            [['reg_no', 'bank_branch'], 'string', 'max' => 50],
             [['telephone'], 'string', 'max' => 20],
             [['confirm'], 'required', 'on' => self::SCENARIO_REGISTRATION, 'requiredValue' => 1, 'message' => 'Please Confirm'],
-//			[['confirm'], 'required', 'requiredValue' => 1, 'message' => 'Please Confirm'],
+            ['dob', 'daterange_validation'],
+            [['payment_date', 'bank_branch'], 'required', 'when' => function ($model) {
+            return $model->payment_mathod == self::PAYMENT_M_BANK;
+        }, 'whenClient' => "function (attribute, value) {
+                    
+                        return $(\"[name='" . Html::getInputName($this, 'payment_mathod') . "']:checked\").val() == '" . self::PAYMENT_M_BANK . "';
+                    }"],
         ];
+    }
+
+    public function daterange_validation($attribute, $params)
+    {
+        if (($batch = Batch::getCurrentBatch()) === null) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+        if ($batch->getRestrictedTimestamp() > strtotime($this->$attribute))
+            $this->addError($attribute, 'Custom Validation Error');
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return [
             'user_id' => 'User ID',
             'initials' => 'Name with Initials',
             'reg_no' => 'Registration Number',
             'gender' => 'Gender',
             'dob' => 'Date of Birth',
-            'college_and_address' => 'College & Addresss',
+            'exam_center_id' => 'Exam Center',
             'telephone' => 'Contact Telephone',
             'medium' => 'Medium',
             'academic_year' => 'Academic Year',
             'confirm' => 'Please Confirm',
+            'payment_mathod' => 'Payment Mathod',
+            'payment_date' => 'Payment Date',
+            'bank_branch' => 'Bank Branch',
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUser() {
+    public function getUser()
+    {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
-    public function getGenderLabels() {
+    public function getGenderLabels()
+    {
         return [
             self::GENDER_MALE => 'Male',
             self::GENDER_FEMALE => 'Female',
         ];
     }
 
-    public function getGenderLabel() {
+    public function getGenderLabel()
+    {
         return $this->getGenderLabels()[$this->gender];
     }
 
-    public function getMediumLabels() {
+    public function getMediumLabels()
+    {
         return [
             self::MEDIUM_SINHALA => 'Sinhala',
             self::MEDIUM_TAMIL => 'Tamil',
@@ -103,11 +135,13 @@ class UserDetail extends \yii\db\ActiveRecord {
         ];
     }
 
-    public function getMediumLabel() {
+    public function getMediumLabel()
+    {
         return $this->getMediumLabels()[$this->medium];
     }
 
-    public function beforeSave($insert) {
+    public function beforeSave($insert)
+    {
         if ($insert) {
             $this->_batch = Batch::findOne(['status' => Batch::STATUS_ACTIVE]);
             $this->reg_no = $this->_batch->name . '-' . str_pad($this->_batch->counter, 5, 0, STR_PAD_LEFT);
@@ -116,7 +150,8 @@ class UserDetail extends \yii\db\ActiveRecord {
         return parent::beforeSave($insert);
     }
 
-    public function afterSave($insert, $changedAttributes) {
+    public function afterSave($insert, $changedAttributes)
+    {
         if ($insert)
             $this->_batch->updateCounters(['counter' => 1]);
 
@@ -126,8 +161,30 @@ class UserDetail extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBatch() {
+    public function getBatch()
+    {
         return $this->hasOne(Batch::className(), ['year' => 'academic_year']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getExamCenter()
+    {
+        return $this->hasOne(BatchExamCenters::className(), ['id' => 'exam_center_id']);
+    }
+
+    public function getPaymentMethodLabels()
+    {
+        return [
+            self::PAYMENT_M_ONLINE => 'Online',
+            self::PAYMENT_M_BANK => 'Paid to the bank',
+        ];
+    }
+
+    public function getPaymentMethodLabel()
+    {
+        return $this->getPaymentMethodLabels()[$this->payment_mathod];
     }
 
 }

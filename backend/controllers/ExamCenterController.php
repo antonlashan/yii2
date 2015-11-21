@@ -3,16 +3,16 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\Batch;
-use yii\data\ActiveDataProvider;
+use backend\models\BatchExamCentersSearch;
+use common\models\BatchExamCenters;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * BatchController implements the CRUD actions for Batch model.
+ * ExamCenterController implements the CRUD actions for BatchExamCenters model.
  */
-class BatchController extends Controller {
+class ExamCenterController extends Controller {
 
     public function behaviors()
     {
@@ -27,22 +27,22 @@ class BatchController extends Controller {
     }
 
     /**
-     * Lists all Batch models.
+     * Lists all BatchExamCenters models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Batch::find(),
-        ]);
+        $searchModel = new BatchExamCentersSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+                    'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
         ]);
     }
 
     /**
-     * Displays a single Batch model.
+     * Displays a single BatchExamCenters model.
      * @param integer $id
      * @return mixed
      */
@@ -54,20 +54,15 @@ class BatchController extends Controller {
     }
 
     /**
-     * Creates a new Batch model.
+     * Creates a new BatchExamCenters model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Batch();
+        $model = new BatchExamCenters();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if ($model->status == Batch::STATUS_ACTIVE) {
-                Batch::updateAll(['status' => Batch::STATUS_INACTIVE]);
-                $model->status = Batch::STATUS_ACTIVE;
-                $model->update();
-            }
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -77,7 +72,7 @@ class BatchController extends Controller {
     }
 
     /**
-     * Updates an existing Batch model.
+     * Updates an existing BatchExamCenters model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -87,11 +82,6 @@ class BatchController extends Controller {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if ($model->status == Batch::STATUS_ACTIVE) {
-                Batch::updateAll(['status' => Batch::STATUS_INACTIVE]);
-                $model->status = Batch::STATUS_ACTIVE;
-                $model->update();
-            }
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -101,7 +91,7 @@ class BatchController extends Controller {
     }
 
     /**
-     * Deletes an existing Batch model.
+     * Deletes an existing BatchExamCenters model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -114,15 +104,15 @@ class BatchController extends Controller {
     }
 
     /**
-     * Finds the Batch model based on its primary key value.
+     * Finds the BatchExamCenters model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Batch the loaded model
+     * @return BatchExamCenters the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Batch::findOne($id)) !== null) {
+        if (($model = BatchExamCenters::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

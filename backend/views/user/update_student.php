@@ -1,7 +1,4 @@
 <?php
-
-use yii\helpers\Html;
-
 /* @var $this yii\web\View */
 /* @var $model common\models\User */
 
@@ -11,11 +8,12 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="user-update">
 
 
-    <?=
-    $this->render('_form_student', [
-        'user' => $user,
-        'userDetail' => $userDetail,
-    ])
-    ?>
+<?=
+$this->render('_form_student', [
+    'user' => $user,
+    'userDetail' => $userDetail,
+    'examCenters' => $examCenters,
+])
+?>
 
 </div>

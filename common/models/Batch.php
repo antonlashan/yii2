@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use common\components\Helper;
 
 /**
  * This is the model class for table "{{%batch}}".
@@ -13,11 +14,12 @@ use Yii;
  * @property string $age_as_at
  * @property string $date_of_examination
  * @property string $time
- * @property string $examination_center
  * @property integer $counter
  * @property integer $status
+ * @property integer $restricted_age
  * 
  * @property UserDetail[] $userDetails
+ * @property BatchExamCenters[] $batchExamCenters
  */
 class Batch extends \yii\db\ActiveRecord {
 
@@ -28,28 +30,30 @@ class Batch extends \yii\db\ActiveRecord {
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%batch}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['name', 'year', 'date_of_examination', 'time', 'examination_center'], 'required'],
+            [['name', 'year', 'date_of_examination', 'time'], 'required'],
             [['year', 'age_as_at', 'date_of_examination'], 'safe'],
-            [['counter', 'status'], 'integer'],
+            [['counter', 'status', 'restricted_age'], 'integer'],
             [['name'], 'string', 'max' => 50],
             [['time'], 'string', 'max' => 20],
-            [['examination_center'], 'string', 'max' => 150]
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return [
             'id' => 'ID',
             'name' => 'Batch Name',
@@ -57,31 +61,33 @@ class Batch extends \yii\db\ActiveRecord {
             'age_as_at' => 'Age as at',
             'date_of_examination' => 'Date of Examination',
             'time' => 'Time',
-            'examination_center' => 'Examination Center And number',
             'counter' => 'Counter',
             'status' => 'Status',
+            'restricted_age' => 'Restricted Age'
         ];
     }
 
-    public function getStatusLabels() {
+    public function getStatusLabels()
+    {
         return [
             self::STATUS_ACTIVE => 'Active',
             self::STATUS_INACTIVE => 'Inactive',
         ];
     }
 
-    public function getStatusLabel() {
+    public function getStatusLabel()
+    {
         return $this->getStatusLabels()[$this->status];
     }
 
-    public static function getCurrentBatch() {
+    public static function getCurrentBatch()
+    {
         return self::findOne(['status' => self::STATUS_ACTIVE]);
     }
 
-    public function getAgeAsAt($date) {
-        $datetime1 = date_create($this->age_as_at);
-        $datetime2 = date_create($date);
-        $interval = date_diff($datetime1, $datetime2);
+    public function getAgeAsAt($date)
+    {
+        $interval = Helper::getDaysBetweenDates($this->age_as_at, $date);
 
         return $interval->format('%y Years %m Months %d Days');
     }
@@ -89,8 +95,22 @@ class Batch extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUserDetails() {
+    public function getUserDetails()
+    {
         return $this->hasMany(UserDetail::className(), ['academic_year' => 'year']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBatchExamCenters()
+    {
+        return $this->hasMany(BatchExamCenters::className(), ['batch_id' => 'id']);
+    }
+
+    public function getRestrictedTimestamp()
+    {
+        return strtotime("-{$this->restricted_age} year", strtotime($this->age_as_at));
     }
 
 }

@@ -6,6 +6,7 @@ use Yii;
 use backend\models\StudentSearch;
 use backend\models\UserSearch;
 use common\models\Batch;
+use common\models\BatchExamCenters;
 use common\models\ChangePasswordForm;
 use common\models\User;
 use common\models\UserDetail;
@@ -19,7 +20,8 @@ use yii\web\NotFoundHttpException;
  */
 class UserController extends Controller {
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'access' => [
                 'class' => \yii\filters\AccessControl::className(),
@@ -43,7 +45,8 @@ class UserController extends Controller {
      * Lists all User models.
      * @return mixed
      */
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -58,7 +61,8 @@ class UserController extends Controller {
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id) {
+    public function actionView($id)
+    {
         return $this->render('view', [
                     'model' => $this->findModel($id),
         ]);
@@ -70,7 +74,8 @@ class UserController extends Controller {
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id) {
+    public function actionUpdate($id)
+    {
         $user = $this->findModel($id);
 
         $userDetail = $user->userDetail;
@@ -135,7 +140,8 @@ class UserController extends Controller {
         ]);
     }
 
-    public function actionUpdateStatus($id) {
+    public function actionUpdateStatus($id)
+    {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -160,7 +166,8 @@ class UserController extends Controller {
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id) {
+    public function actionDelete($id)
+    {
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -173,7 +180,8 @@ class UserController extends Controller {
      * @return User the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id) {
+    protected function findModel($id)
+    {
         if (($model = User::findOne($id)) !== null) {
             return $model;
         } else {
@@ -181,7 +189,8 @@ class UserController extends Controller {
         }
     }
 
-    protected function findUserdetailModel($id) {
+    protected function findUserdetailModel($id)
+    {
         if (($model = UserDetail::find()
                         ->joinWith('user', true, 'INNER JOIN')
                         ->where(['user_id' => $id])->one()) !== null) {
@@ -191,7 +200,8 @@ class UserController extends Controller {
         }
     }
 
-    public function actionChangePassword($id) {
+    public function actionChangePassword($id)
+    {
         $model = new ChangePasswordForm($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->changePassword()) {
@@ -209,7 +219,8 @@ class UserController extends Controller {
      * Lists all User models.
      * @return mixed
      */
-    public function actionStudents() {
+    public function actionStudents()
+    {
         $currBatch = Batch::getCurrentBatch();
 
         $searchModel = new StudentSearch();
@@ -224,13 +235,15 @@ class UserController extends Controller {
         ]);
     }
 
-    public function actionViewStudent($id) {
+    public function actionViewStudent($id)
+    {
         return $this->render('view_student', [
                     'model' => $this->findUserdetailModel($id),
         ]);
     }
 
-    public function actionUpdateStudent($id) {
+    public function actionUpdateStudent($id)
+    {
 
         $userDetail = $this->findUserdetailModel($id);
         $user = $userDetail->user;
@@ -245,20 +258,28 @@ class UserController extends Controller {
             }
         }
 
+        if (($batch = Batch::getCurrentBatch()) === null) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+        $examCenters = ArrayHelper::map(BatchExamCenters::find()->where(['batch_id' => $batch->id])->asArray()->all(), 'id', 'name');
+
         return $this->render('update_student', [
                     'user' => $user,
                     'userDetail' => $userDetail,
+                    'examCenters' => $examCenters,
         ]);
     }
 
-    public function actionDeleteStudent($id) {
+    public function actionDeleteStudent($id)
+    {
         $this->findModel($id)->delete();
         UserDetail::deleteAll(['user_id' => $id]);
 
         return $this->redirect(['students']);
     }
 
-    public function actionExportStudentsCsv($year) {
+    public function actionExportStudentsCsv($year)
+    {
 
         $batch = Batch::find()
                         ->joinWith('userDetails', true, 'INNER JOIN')
@@ -277,7 +298,7 @@ class UserController extends Controller {
 
         fputcsv($fp, [
             $userDetail->getAttributeLabel('reg_no'),
-            'Full Name',
+//            'Full Name',
             $userDetail->getAttributeLabel('initials'),
             'Email',
             $userDetail->getAttributeLabel('gender'),
@@ -285,20 +306,22 @@ class UserController extends Controller {
             $userDetail->getAttributeLabel('college_and_address'),
             $userDetail->getAttributeLabel('telephone'),
             $userDetail->getAttributeLabel('medium'),
-            $userDetail->getAttributeLabel('academic_year'),
+            $userDetail->getAttributeLabel('payment_date'),
+            $userDetail->getAttributeLabel('bank_branch'),
         ]);
         foreach ($batch->userDetails as $detail) {
             fputcsv($fp, [
                 "{$detail->reg_no}",
-                "{$detail->user->full_name}",
+//                "{$detail->user->full_name}",
                 "{$detail->initials}",
                 "{$detail->user->email}",
                 "{$detail->getGenderLabel()}",
                 "{$detail->dob}",
-                "{$detail->college_and_address}",
                 "{$detail->telephone}",
                 "{$detail->getMediumLabel()}",
                 "{$batch->name}",
+                "{$detail->payment_date}",
+                "{$detail->bank_branch}",
             ]);
         }
 

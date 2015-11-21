@@ -36,7 +36,7 @@ use dosamigos\datepicker\DatePicker;
 		    ?>
 		</div>
 		<div class="col-md-6">
-		    <?= $form->field($userDetail, 'college_and_address')->textarea() ?>
+		    <?= $form->field($userDetail, 'exam_center_id')->dropDownList($examCenters) ?>
 		</div>
 		<div class="col-md-6">
 		    <?= $form->field($userDetail, 'telephone')->textInput(['maxlength' => true]) ?>

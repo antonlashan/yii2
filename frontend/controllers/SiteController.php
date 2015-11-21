@@ -4,13 +4,14 @@ namespace frontend\controllers;
 
 use Yii;
 use common\models\Batch;
+use common\models\BatchExamCenters;
 use common\models\User;
 use common\models\UserDetail;
+use yii\helpers\ArrayHelper;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use kartik\mpdf\Pdf;
 
 /**
  * Site controller
@@ -22,7 +23,8 @@ class SiteController extends Controller {
     /**
      * @inheritdoc
      */
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -52,7 +54,8 @@ class SiteController extends Controller {
     /**
      * @inheritdoc
      */
-    public function actions() {
+    public function actions()
+    {
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
@@ -69,7 +72,8 @@ class SiteController extends Controller {
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate() {
+    public function actionCreate()
+    {
         $model = new User();
         $userDetail = new UserDetail(['scenario' => UserDetail::SCENARIO_REGISTRATION]);
 
@@ -89,13 +93,21 @@ class SiteController extends Controller {
             }
         }
 
+        if (($batch = Batch::getCurrentBatch()) === null) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+        $examCenters = ArrayHelper::map(BatchExamCenters::find()->where(['batch_id' => $batch->id])->asArray()->all(), 'id', 'name');
+
         return $this->render('create-student', [
                     'model' => $model,
                     'userDetail' => $userDetail,
+                    'batch' => $batch,
+                    'examCenters' => $examCenters,
         ]);
     }
 
-    public function actionView($id) {
+    public function actionView($id)
+    {
         $decodedId = base64_decode(urldecode($id));
 
         if (($user = User::findOne($decodedId)) === null) {
@@ -109,7 +121,8 @@ class SiteController extends Controller {
         return $this->render('view', ['user' => $user, 'batch' => $batch, 'id' => $id, 'pdf' => false]);
     }
 
-    public function actionPdf($id) {
+    public function actionPdf($id)
+    {
         $id = base64_decode(urldecode($id));
 
         if (($user = User::findOne($id)) === null) {

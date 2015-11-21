@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => $model->getGenderLabel(),
             ],
             'dob',
-            'college_and_address',
+            'examCenter.name',
             'telephone',
             [
                 'attribute' => 'medium',
