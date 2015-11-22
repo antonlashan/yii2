@@ -52,3 +52,32 @@ environments/            contains environment-based overrides
 tests                    contains various tests for the advanced application
     codeception/         contains tests developed with Codeception PHP Testing Framework
 ```
+
+configure dompdf
+-------------------
+
+```
+1) Copy all files inside the font folder into the vendor/dompdf/dompdf/lib/fonts
+2) Add these lines into vendor/dompdf/dompdf/lib/fonts/dompdf_font_family_cache.php
+'sinhala' =>
+    array(
+        'normal' => DOMPDF_FONT_DIR . 'iskpota',
+        'bold' => DOMPDF_FONT_DIR . 'iskpotab',
+        'italic' => DOMPDF_FONT_DIR . 'iskpota',
+        'bold_italic' => DOMPDF_FONT_DIR . 'iskpota',
+    ),
+    'sinhala2' =>
+    array(
+        'normal' => DOMPDF_FONT_DIR . 'iskpotab',
+        'bold' => DOMPDF_FONT_DIR . 'iskpotab',
+        'italic' => DOMPDF_FONT_DIR . 'iskpotab',
+        'bold_italic' => DOMPDF_FONT_DIR . 'iskpotab',
+    ),
+    'tamil' =>
+    array(
+        'normal' => DOMPDF_FONT_DIR . 'NirmalaS',
+        'bold' => DOMPDF_FONT_DIR . 'NirmalaS',
+        'italic' => DOMPDF_FONT_DIR . 'NirmalaS',
+        'bold_italic' => DOMPDF_FONT_DIR . 'NirmalaS',
+    ),
+```

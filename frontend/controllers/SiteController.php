@@ -139,6 +139,7 @@ class SiteController extends Controller {
         require_once Yii::getAlias('@vendor') . '/dompdf/dompdf/dompdf_config.inc.php';
         $dompdf = new \DOMPDF();
         $dompdf->load_html($content);
+        $dompdf->set_paper('A4');
         $dompdf->render();
         $dompdf->stream("sample.pdf");
     }
