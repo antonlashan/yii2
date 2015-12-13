@@ -184,7 +184,8 @@ class UserDetail extends \yii\db\ActiveRecord {
 
     public function getPaymentMethodLabel()
     {
-        return $this->getPaymentMethodLabels()[$this->payment_mathod];
+        $labels = $this->getPaymentMethodLabels();
+        return isset($labels[$this->payment_mathod]) ? $labels[$this->payment_mathod] : null;
     }
 
 }

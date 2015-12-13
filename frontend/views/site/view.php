@@ -107,7 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </td>
 </tr>
 <tr>
-    <td>
+    <td colspan="3">
 
         Name and Signature, stamp  of the Attester<br/>
         <span style="font-family:sinhala2, sinhala">
@@ -117,10 +117,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 உங்களைப் பார்த்து நிறைய நாட்கள் ஆகிவிட்டது உங்களைப் 
         </span>
     </td>
-    <td colspan="3"></td>
+    <td></td>
 </tr>
 <tr>
-    <td colspan="4">
+    <td colspan="4" style="height: 340px;">
         Paste the bank voucher here<br/>
         <span style="font-family:sinhala2, sinhala">
 			සුන්දර බදුල්ල නගරයෙන් ආරම්භ වී කථා නායකයෙකු සේ දඟර ගැසෙමින් දිවෙන දුන්හිඳ හරහා මහියංගන මාර්ගයේ සැතපුම් 20 ක්‌ ගෙවූ පසු "මීගහකිවුල" නගරය හමුවේ. මීගහකිවුල හන්දියෙන් හැරී යන කුඩා පටු තාර දැමූ මාර්ගයේ තවත් සැතැපුම් නවයක්‌ දුර ගිය තැන කැටවත්ත නම් වූ පුංචි ගම්මානය මුණගැසේ.

@@ -76,7 +76,12 @@ $this->registerJs(
                     $disabled = '';
                     if ($value == UserDetail::PAYMENT_M_ONLINE)
                         $disabled = 'disabled';
-                    $return = '<label><input type="radio" ' . $disabled . '  name="' . $name . '" value="' . $value . '"> ' . $label . '</label>';
+					
+					if ($checked)
+                        $checked = 'checked=1';
+					else
+						$checked = '';
+                    $return = '<label><input type="radio" ' . $disabled . ' ' . $checked . ' name="' . $name . '" value="' . $value . '"> ' . $label . '</label>';
                     return $return;
                 }
             ])

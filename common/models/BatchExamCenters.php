@@ -55,4 +55,9 @@ class BatchExamCenters extends \yii\db\ActiveRecord {
         return $this->hasOne(Batch::className(), ['id' => 'batch_id']);
     }
 
+    public static function getCentersArrByBatch($batchId)
+    {
+        return self::find()->where(['batch_id' => $batchId])->asArray()->all();
+    }
+
 }

@@ -17,7 +17,7 @@ class StudentSearch extends UserDetail {
      */
     public function rules() {
         return [
-            [['academic_year'], 'required'],
+            [['academic_year', 'exam_center_id'], 'required'],
             [['initials', 'reg_no'], 'safe']
         ];
     }
@@ -56,6 +56,7 @@ class StudentSearch extends UserDetail {
 
         $query->andFilterWhere([
             'academic_year' => $this->academic_year,
+            'exam_center_id' => $this->exam_center_id,
         ]);
 
         $query->andFilterWhere(['like', 'initials', $this->initials])

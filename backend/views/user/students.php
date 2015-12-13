@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\StudentSearch */
@@ -23,9 +24,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            'initials',
-            'user.full_name',
             'reg_no',
+            'initials',
+            [
+                'attribute' => 'exam_center_id',
+                'filter' => Html::activeDropDownList($searchModel, 'exam_center_id', ArrayHelper::map($examCenters, 'id', 'name'), ['class' => 'form-control', 'prompt' => 'Select Center']),
+                'value' => function($data) {
+            return !empty($data->examCenter) ? $data->examCenter->name : null;
+        }
+            ],
             [
                 'attribute' => 'status',
                 'value' => function($data) {
@@ -33,6 +40,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             'telephone',
+            [
+                'attribute' => 'payment_mathod',
+                'value' => function($data) {
+                    return $data->getPaymentMethodLabel();
+                }
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view} {update} {delete}',
@@ -43,26 +56,26 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'title' => Yii::t('app', 'View'),
                         ]);
                     },
-                    //update button
-                    'update' => function ($url, $model, $key) {
+                            //update button
+                            'update' => function ($url, $model, $key) {
                         return Html::a('<span class="glyphicon glyphicon-pencil"></span>', Url::to(['update-student', 'id' => $model->user_id]), [
                                     'title' => Yii::t('app', 'Update'),
                         ]);
                     },
-                    //delete button
-                    'delete' => function ($url, $model, $key) {
+                            //delete button
+                            'delete' => function ($url, $model, $key) {
                         return Html::a('<span class="glyphicon glyphicon-trash"></span>', Url::to(['delete-student', 'id' => $model->user_id]), [
                                     'title' => Yii::t('yii', 'Delete'),
                                     'data-confirm' => Yii::t('yii', 'Are you sure to delete this item?'),
                                     'data-method' => 'post',
                         ]);
                     },
+                        ],
+                    ],
                 ],
-            ],
-        ],
-    ]);
-    ?>
-    
-    <?= Html::a('Export to CSV', ['export-students-csv', 'year' => $searchModel->academic_year], ['class' => 'btn btn-danger']) ?>
+            ]);
+            ?>
+
+            <?= Html::a('Export to CSV', ['export-students-csv', 'year' => $searchModel->academic_year, 'cid' => $searchModel->exam_center_id], ['class' => 'btn btn-danger']) ?>
 
 </div>

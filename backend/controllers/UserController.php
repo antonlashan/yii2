@@ -20,6 +20,7 @@ use yii\web\NotFoundHttpException;
  */
 class UserController extends Controller {
 
+    private $_cid;
     public function behaviors()
     {
         return [
@@ -222,6 +223,7 @@ class UserController extends Controller {
     public function actionStudents()
     {
         $currBatch = Batch::getCurrentBatch();
+        $examCenters = BatchExamCenters::getCentersArrByBatch($currBatch->id);
 
         $searchModel = new StudentSearch();
         $searchModel->academic_year = $currBatch->year;
@@ -232,6 +234,7 @@ class UserController extends Controller {
         return $this->render('students', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
+                    'examCenters' => $examCenters,
         ]);
     }
 
@@ -278,51 +281,57 @@ class UserController extends Controller {
         return $this->redirect(['students']);
     }
 
-    public function actionExportStudentsCsv($year)
+    public function actionExportStudentsCsv($year, $cid = '')
     {
+        $this->_cid = $cid;
+        
+        $q = Batch::find();
+        if (empty($this->_cid)) {
+            $q->joinWith('userDetails', true, 'INNER JOIN');
+        } else {
+            $q->joinWith([
+                'userDetails' => function ($query) {
+                    $query->andWhere(['exam_center_id' => $this->_cid]);
+                }
+                    ], true, 'INNER JOIN');
+        }
+        $q->where(['academic_year' => $year]);
 
-        $batch = Batch::find()
-                        ->joinWith('userDetails', true, 'INNER JOIN')
-                        ->where(['academic_year' => $year])->one();
+        $batch = $q->one();
 
         if ($batch == null) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
         $userDetail = new UserDetail();
-
+        
+        $fileName = $batch->name;
+        if(!empty($this->_cid))
+            $fileName = BatchExamCenters::findOne($this->_cid)->name;
+        $fileName = preg_replace('/[^a-zA-Z0-9]+/', '-', $fileName);
+        
         // send response headers to the browser
         header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment;filename=' . $batch->name . '.csv');
+        header('Content-Disposition: attachment;filename=' . $fileName . '.csv');
         $fp = fopen('php://output', 'w');
 
         fputcsv($fp, [
+            '',
             $userDetail->getAttributeLabel('reg_no'),
-//            'Full Name',
             $userDetail->getAttributeLabel('initials'),
-            'Email',
             $userDetail->getAttributeLabel('gender'),
-            $userDetail->getAttributeLabel('dob'),
-            $userDetail->getAttributeLabel('college_and_address'),
-            $userDetail->getAttributeLabel('telephone'),
-            $userDetail->getAttributeLabel('medium'),
-            $userDetail->getAttributeLabel('payment_date'),
-            $userDetail->getAttributeLabel('bank_branch'),
+            'Signature',
         ]);
+        $i = 1;
         foreach ($batch->userDetails as $detail) {
             fputcsv($fp, [
+                "{$i}",
                 "{$detail->reg_no}",
-//                "{$detail->user->full_name}",
                 "{$detail->initials}",
-                "{$detail->user->email}",
                 "{$detail->getGenderLabel()}",
-                "{$detail->dob}",
-                "{$detail->telephone}",
-                "{$detail->getMediumLabel()}",
-                "{$batch->name}",
-                "{$detail->payment_date}",
-                "{$detail->bank_branch}",
+                "",
             ]);
+            $i++;
         }
 
         fclose($fp);
