@@ -10,23 +10,24 @@ $this->title = 'Details';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <style>
-    /*body { font-family: verdana, sans-serif;}*/ 
+    body { font-family: verdana, sans-serif;} 
 
     th,td {
-        padding: 3pt;
+        padding: 3px;
     }
 
     table.collapse2 {
         border-collapse: collapse;
-        border: 1pt solid black;  
-        font-size: 0.9em;
+        border: 1px solid black;
     }
 
     table.collapse2 td {
-        border: 1pt solid black;
+        border: 1px solid black;
     }
+	@page { margin: 10px 10px; }
+body { margin: 10px 10px; }
 </style>
-<table width="<?= ($pdf ? '100%' : '800px') ?>" class="collapse2">
+<table width="<?= ($pdf ? '50%' : '600px') ?>" class="collapse2">
     <tbody>
         <tr>
             <td colspan="4">
@@ -92,42 +93,31 @@ $this->params['breadcrumbs'][] = $this->title;
 </tr>
 <tr>
     <td colspan="4">
-        I state that the above particulars are true and correct and agree with the rules and regulation of the competition<br/><br/>Signature
+		I state that the above particulars are true and correct and agree with the rules and regulations of the competition.<br/>
+        <?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/text_1.jpg') ?>
+        <br/>
+        <br/>
+        Signature
     </td>
 </tr>
 <tr>
     <td colspan="4">
         I certify that the applicant named on this form did appearpersonally before me and the photograph affixed hereto is of applicant.<br/>
-        <span style="font-family:sinhala2, sinhala">
-			ශ්‍රී ලංකා ගමනාගමන මණ්ඩලයේ (ශ්‍රී ලංගම) පානදුර ඩිපෝවට අයත් අශෝක් ලේලන්ඩ් වයිකින්ග් වර්ගයේ බස් රථයකි. මෙම බස්රථය මාර්ග අංක 64 ඔස්සේ පානදුර හා කැටවත්ත අතර ධාවනය බදුල්ල හරහාය
-        </span><br/>
-        <span style="font-family:tamil">
-                உங்களைப் பார்த்து நிறைய நாட்கள் ஆகிவிட்டது உங்களைப் பார்த்து நிறைய நாட்கள் ஆகிவிட்டது உங்களைப் பார்த்து நிறைய நாட்கள் ஆகிவிட்டது
-        </span>
+        <?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/text_2.jpg') ?>
     </td>
 </tr>
 <tr>
     <td colspan="3">
 
         Name and Signature, stamp  of the Attester<br/>
-        <span style="font-family:sinhala2, sinhala">
-			එහෙත් මෙය සත්‍යයකි. ඇස්‌ පනා පිට අද ද සිදුවන්නකි. අපේ රටේ එක්‌ කෙළවරක ඈත
-        </span><br/>
-        <span style="font-family:tamil">
-                உங்களைப் பார்த்து நிறைய நாட்கள் ஆகிவிட்டது உங்களைப் 
-        </span>
+        <?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/text_3.jpg') ?>
     </td>
     <td></td>
 </tr>
 <tr>
-    <td colspan="4" style="height: 340px;">
+    <td colspan="4" >
         Paste the bank voucher here<br/>
-        <span style="font-family:sinhala2, sinhala">
-			සුන්දර බදුල්ල නගරයෙන් ආරම්භ වී කථා නායකයෙකු සේ දඟර ගැසෙමින් දිවෙන දුන්හිඳ හරහා මහියංගන මාර්ගයේ සැතපුම් 20 ක්‌ ගෙවූ පසු "මීගහකිවුල" නගරය හමුවේ. මීගහකිවුල හන්දියෙන් හැරී යන කුඩා පටු තාර දැමූ මාර්ගයේ තවත් සැතැපුම් නවයක්‌ දුර ගිය තැන කැටවත්ත නම් වූ පුංචි ගම්මානය මුණගැසේ.
-        </span><br/>
-        <span style="font-family:tamil">
-                உங்களைப் பார்த்து நிறைய நாட்கள் ஆகிவிட்டது உங்களைப் பார்த்து நிறைய நாட்கள் ஆகிவிட்டது உங்களைப் பார்த்து நிறைய நாட்கள் ஆகிவிட்டது
-        </span>
+        <?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/text_4.jpg') ?>
     </td>
 </tr>
 </tbody>

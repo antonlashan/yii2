@@ -142,7 +142,7 @@ class SiteController extends Controller {
         $dompdf->load_html($content);
         $dompdf->set_paper('A4');
         $dompdf->render();
-        $dompdf->stream("sample.pdf");
+        $dompdf->stream("admission_card.pdf");
     }
 
 }
