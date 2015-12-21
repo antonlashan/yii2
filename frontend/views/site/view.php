@@ -23,9 +23,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
     table.collapse2 td {
         border: 1px solid black;
+		font-size: 0.8em;
     }
-	@page { margin: 10px 10px; }
-body { margin: 10px 10px; }
+	@page { margin: 10px 10px 10px 20px; }
+body { margin: 10px 10px 10px 20px; }
 </style>
 <table width="<?= ($pdf ? '50%' : '600px') ?>" class="collapse2">
     <tbody>
@@ -36,7 +37,7 @@ body { margin: 10px 10px; }
                         <tr>
                             <th width="25%"><?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/logo.png') ?></th>
                             <th width="50%" align="center"><h3><?= strtoupper(Yii::$app->name . ' - ' . $batch->year . ' Admission') ?></h3></th>
-                    <th width="25%" align="right"><?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/default_avatar.png') ?></th>
+                    <th width="25%" class="text-right"><?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/default_avatar.png') ?></th>
         </tr>
     </tbody>
 </table>		    
@@ -56,14 +57,16 @@ body { margin: 10px 10px; }
     <td><?= $user->userDetail->getAttributeLabel('gender') ?></td>
     <td><?= $user->userDetail->getGenderLabel() ?></td>
 </tr>
-<tr>
-    <td><?= $user->userDetail->getAttributeLabel('payment_mathod') ?></td>
-    <td><?= $user->userDetail->getPaymentMethodLabel() ?></td>
-    <?php if ($user->userDetail->payment_mathod == UserDetail::PAYMENT_M_BANK) { ?>
-        <td><?= $user->userDetail->getAttributeLabel('payment_date') ?>: <?= $user->userDetail->payment_date ?></td>
-        <td><?= $user->userDetail->getAttributeLabel('bank_branch') ?>: <?= $user->userDetail->bank_branch ?></td>
-    <?php } ?>
-</tr>
+<?php if(!$pdf) { ?>
+	<tr>
+		<td><?= $user->userDetail->getAttributeLabel('payment_mathod') ?></td>
+		<td><?= $user->userDetail->getPaymentMethodLabel() ?></td>
+		<?php if ($user->userDetail->payment_mathod == UserDetail::PAYMENT_M_BANK) { ?>
+			<td><?= $user->userDetail->getAttributeLabel('payment_date') ?>: <?= $user->userDetail->payment_date ?></td>
+			<td><?= $user->userDetail->getAttributeLabel('bank_branch') ?>: <?= $user->userDetail->bank_branch ?></td>
+		<?php } ?>
+	</tr>
+<?php } ?>
 <tr>
     <td><?= $user->userDetail->getAttributeLabel('dob') ?></td>
     <td><?= $user->userDetail->dob ?></td>
@@ -71,19 +74,21 @@ body { margin: 10px 10px; }
     <td><?= $batch->getAgeAsAt($user->userDetail->dob) ?></td>
 </tr>
 <tr>
-    <td width="25%"><?= $user->userDetail->getAttributeLabel('exam_center_id') ?></td>
-    <td width="25%"><?= (!empty($user->userDetail->examCenter) ? $user->userDetail->examCenter->name : '') ?></td>
-    <td width="25%"><?= $user->userDetail->getAttributeLabel('telephone') ?></td>
+    <td><?= $user->userDetail->getAttributeLabel('exam_center_id') ?></td>
+    <td colspan="3"><?= (!empty($user->userDetail->examCenter) ? $user->userDetail->examCenter->name : '') ?></td>    
+</tr>
+<?php if(!$pdf) { ?>
+	<tr>
+		<td colspan="2"></td>
+		<td><?= $user->getAttributeLabel('email') ?></td>
+		<td><?= $user->email ?></td>
+	</tr>
+<?php } ?>
+<tr>
+    <td width="25%"><?= $batch->getAttributeLabel('date_of_examination') ?></td>
+    <td width="25%"><?= $batch->date_of_examination ?></td>
+	<td width="25%"><?= $user->userDetail->getAttributeLabel('telephone') ?></td>
     <td width="25%"><?= $user->userDetail->telephone ?></td>
-</tr>
-<tr>
-    <td colspan="2"></td>
-    <td><?= $user->getAttributeLabel('email') ?></td>
-    <td><?= $user->email ?></td>
-</tr>
-<tr>
-    <td><?= $batch->getAttributeLabel('date_of_examination') ?></td>
-    <td colspan="3"><?= $batch->date_of_examination ?></td>
 </tr>
 <tr>
     <td><?= $batch->getAttributeLabel('time') ?></td>
@@ -115,7 +120,7 @@ body { margin: 10px 10px; }
     <td></td>
 </tr>
 <tr>
-    <td colspan="4" >
+    <td colspan="4" style="height: 300px;">
         Paste the bank voucher here<br/>
         <?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/text_4.jpg') ?>
     </td>
