@@ -58,6 +58,9 @@ $this->registerJs(
             ?>
         </div>
         <div class="col-md-6">
+            <?= $form->field($userDetail, 'address')->textarea() ?>
+        </div>
+        <div class="col-md-6">
             <?= $form->field($userDetail, 'exam_center_id')->dropDownList($examCenters, ['prompt' => '- select center -']) ?>
         </div>
         <div class="col-md-6">

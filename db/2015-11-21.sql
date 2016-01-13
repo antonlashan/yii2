@@ -21,3 +21,6 @@ ALTER TABLE `reg_user_detail`
 	ADD COLUMN `payment_mathod` TINYINT NOT NULL AFTER `academic_year`,
 	ADD COLUMN `payment_date` DATE NULL AFTER `payment_mathod`,
 	ADD COLUMN `bank_branch` VARCHAR(50) NULL AFTER `payment_date`;
+
+ALTER TABLE `reg_user_detail`
+	ADD COLUMN `address` TEXT NOT NULL AFTER `bank_branch`;

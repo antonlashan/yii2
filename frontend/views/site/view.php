@@ -52,21 +52,15 @@ $this->params['breadcrumbs'][] = $this->title;
     <td colspan="3"><?= $user->userDetail->initials ?></td>
 </tr>
 <tr>
+    <td><?= $user->userDetail->getAttributeLabel('address') ?></td>
+    <td colspan="3"><?= $user->userDetail->address ?></td>
+</tr>
+<tr>
     <td><?= $user->userDetail->getAttributeLabel('reg_no') ?></td>
     <td><?= $user->userDetail->reg_no ?></td>
     <td><?= $user->userDetail->getAttributeLabel('gender') ?></td>
     <td><?= $user->userDetail->getGenderLabel() ?></td>
 </tr>
-<?php if (!$pdf) { ?>
-    <tr>
-        <td><?= $user->userDetail->getAttributeLabel('payment_mathod') ?></td>
-        <td><?= $user->userDetail->getPaymentMethodLabel() ?></td>
-        <?php if ($user->userDetail->payment_mathod == UserDetail::PAYMENT_M_BANK) { ?>
-            <td><?= $user->userDetail->getAttributeLabel('payment_date') ?>: <?= $user->userDetail->payment_date ?></td>
-            <td><?= $user->userDetail->getAttributeLabel('bank_branch') ?>: <?= $user->userDetail->bank_branch ?></td>
-        <?php } ?>
-    </tr>
-<?php } ?>
 <tr>
     <td><?= $user->userDetail->getAttributeLabel('dob') ?></td>
     <td><?= $user->userDetail->dob ?></td>
