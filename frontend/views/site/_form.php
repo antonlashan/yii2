@@ -77,19 +77,19 @@ $this->registerJs(
             $form->field($userDetail, 'payment_mathod')->radioList($userDetail->getPaymentMethodLabels(), [
                 'item' => function($index, $label, $name, $checked, $value) {
                     $disabled = '';
-                    if ($value == UserDetail::PAYMENT_M_ONLINE)
-                        $disabled = 'disabled';
-					
-					if ($checked)
+//                    if ($value == UserDetail::PAYMENT_M_ONLINE)
+//                        $disabled = 'disabled';
+
+                    if ($checked)
                         $checked = 'checked=1';
-					else
-						$checked = '';
+                    else
+                        $checked = '';
                     $return = '<label><input type="radio" ' . $disabled . ' ' . $checked . ' name="' . $name . '" value="' . $value . '"> ' . $label . '</label>';
                     return $return;
                 }
             ])
             ?>
-            <div class="row" id="bank">
+            <div class="row">
                 <div class="col-md-6">
                     <?=
                     $form->field($userDetail, 'payment_date')->widget(
@@ -102,11 +102,24 @@ $this->registerJs(
                     ])
                     ?>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" id="bank">
                     <?= $form->field($userDetail, 'bank_branch')->textInput(['maxlength' => true]) ?>
+                </div>
+            </div>            
+        </div>
+        <div class="col-md-12">
+            <p class="help-block">If you have a "Rankekulu" or "14+plus" account at the Bank of Ceylon, Enter the account number and the BOC Branch.</p>
+            <div class="row">
+                
+                <div class="col-md-6">
+                    <?= $form->field($userDetail, 'boc_account_no')->textInput(['maxlength' => true]) ?>
+                </div>
+                <div class="col-md-6">
+                    <?= $form->field($userDetail, 'boc_branch')->textInput(['maxlength' => true]) ?>
                 </div>
             </div>
         </div>
+
 
     </div>
     <div class="row">

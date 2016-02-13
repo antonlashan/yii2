@@ -1,6 +1,7 @@
 html,
 body {
     height: 100%;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .wrap {
@@ -99,3 +100,8 @@ a.desc:after {
     background-color: #143551;
     color: #fff;
 }
+.form-control, .input-group-addon, .breadcrumb, .btn{
+    border-radius: 1px;
+    box-shadow: none;
+}
+.has-success .form-control:focus, .has-error .form-control:focus, .form-control:focus{box-shadow: none;}

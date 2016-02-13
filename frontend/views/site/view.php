@@ -10,7 +10,7 @@ $this->title = 'Details';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <style>
-    body { font-family: verdana, sans-serif;} 
+    /*table { font-family: verdana, sans-serif;}*/ 
 
     th,td {
         padding: 3px;
@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <tbody>
                         <tr>
                             <th width="25%"><?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/logo.png') ?></th>
-                            <th width="50%" align="center"><h3><?= strtoupper(Yii::$app->name . ' - ' . $batch->year . ' Admission') ?></h3></th>
+                            <th width="50%" align="center" class="text-center"><?= strtoupper(Yii::$app->name . ' - ' . $batch->year . ' Admission') ?><br/><?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/boc-small.png') ?></th>
                     <th width="25%" class="text-right"><?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/default_avatar.png') ?></th>
         </tr>
     </tbody>

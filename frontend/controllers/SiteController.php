@@ -76,7 +76,7 @@ class SiteController extends Controller {
     {
         $model = new User();
         $userDetail = new UserDetail(['scenario' => UserDetail::SCENARIO_REGISTRATION]);
-		$userDetail->payment_mathod = UserDetail::PAYMENT_M_BANK;
+        $userDetail->payment_mathod = UserDetail::PAYMENT_M_BANK;
 
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post()) && $userDetail->load(Yii::$app->request->post())) {
 

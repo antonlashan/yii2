@@ -51,6 +51,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'academic_year',
                 'value' => $model->batch->name,
             ],
+            [
+                'attribute' => 'payment_mathod',
+                'value' => $model->getPaymentMethodLabel(),
+            ],
+            'payment_date',
+            'bank_branch',
+            'boc_account_no',
+            'boc_branch',
         ],
     ])
     ?>

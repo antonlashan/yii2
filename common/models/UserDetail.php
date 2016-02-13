@@ -21,6 +21,8 @@ use yii\helpers\Html;
  * @property string $payment_date
  * @property string $bank_branch
  * @property string $address
+ * @property string $boc_account_no
+ * @property string $boc_branch
  *
  * @property User $user
  * @property Batch $batch
@@ -59,15 +61,15 @@ class UserDetail extends \yii\db\ActiveRecord {
     {
         return [
             [['user_id', 'gender', 'medium', 'exam_center_id', 'payment_mathod'], 'integer'],
-            [['initials', 'gender', 'dob', 'telephone', 'medium', 'exam_center_id', 'payment_mathod', 'address'], 'required'],
+            [['initials', 'gender', 'dob', 'telephone', 'medium', 'exam_center_id', 'payment_mathod', 'address', 'payment_date'], 'required'],
             [['academic_year', 'payment_date'], 'safe'],
             [['address'], 'string'],
             [['initials'], 'string', 'max' => 150],
-            [['reg_no', 'bank_branch'], 'string', 'max' => 50],
-            [['telephone'], 'string', 'max' => 20],
+            [['reg_no', 'bank_branch', 'boc_branch'], 'string', 'max' => 50],
+            [['telephone', 'boc_account_no'], 'string', 'max' => 20],
             [['confirm'], 'required', 'on' => self::SCENARIO_REGISTRATION, 'requiredValue' => 1, 'message' => 'Please Confirm'],
             ['dob', 'daterange_validation'],
-            [['payment_date', 'bank_branch'], 'required', 'when' => function ($model) {
+            [['bank_branch'], 'required', 'when' => function ($model) {
             return $model->payment_mathod == self::PAYMENT_M_BANK;
         }, 'whenClient' => "function (attribute, value) {
                     
@@ -101,10 +103,12 @@ class UserDetail extends \yii\db\ActiveRecord {
             'medium' => 'Medium',
             'academic_year' => 'Academic Year',
             'confirm' => 'Please Confirm',
-            'payment_mathod' => 'Payment Mathod',
+            'payment_mathod' => 'Payment Method',
             'payment_date' => 'Payment Date',
             'bank_branch' => 'Bank Branch',
             'address' => 'Address',
+            'boc_account_no' => 'BOC Account No',
+            'boc_branch' => 'Boc Branch',
         ];
     }
 

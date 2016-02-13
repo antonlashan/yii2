@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'updated_at',
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {update} {delete} {change-pwd}',
+                'template' => '{view} {delete} {change-pwd}',
                 'buttons' => [
                     //activate button
                     'activate' => function ($url, $model, $key) {
