@@ -23,6 +23,7 @@ use yii\helpers\Html;
  * @property string $address
  * @property string $boc_account_no
  * @property string $boc_branch
+ * @property string $college
  *
  * @property User $user
  * @property Batch $batch
@@ -61,7 +62,7 @@ class UserDetail extends \yii\db\ActiveRecord {
     {
         return [
             [['user_id', 'gender', 'medium', 'exam_center_id', 'payment_mathod'], 'integer'],
-            [['initials', 'gender', 'dob', 'telephone', 'medium', 'exam_center_id', 'payment_mathod', 'address', 'payment_date'], 'required'],
+            [['initials', 'gender', 'dob', 'telephone', 'medium', 'exam_center_id', 'payment_mathod', 'address', 'payment_date', 'college'], 'required'],
             [['academic_year', 'payment_date'], 'safe'],
             [['address'], 'string'],
             [['initials'], 'string', 'max' => 150],
@@ -109,6 +110,7 @@ class UserDetail extends \yii\db\ActiveRecord {
             'address' => 'Address',
             'boc_account_no' => 'BOC Account No',
             'boc_branch' => 'Boc Branch',
+            'college' => 'College',
         ];
     }
 

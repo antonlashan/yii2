@@ -38,18 +38,25 @@ class User extends ActiveRecord implements IdentityInterface {
     //is admin
     const IS_ADMIN_YES = 1;
     const IS_ADMIN_NO = 0;
+    const SCENARIO_REGISTRATION = 'registration';
+    
+    public $dob;
+    public $college;
+    public $academic_year;
 
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%user}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'timestamp' => [
                 'class' => 'yii\behaviors\TimestampBehavior',
@@ -65,15 +72,34 @@ class User extends ActiveRecord implements IdentityInterface {
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['full_name'], 'required'],
             ['status', 'in', 'range' => [self::STATUS_INACTIVE, self::STATUS_ACTIVE]],
             ['email', 'email'],
+            [['full_name'], 'validateUserReg', 'on' => static::SCENARIO_REGISTRATION],
         ];
     }
 
-    public function attributeLabels() {
+    /**
+     * Validate user registration by full name, dob, college and batch
+     */
+    public function validateUserReg()
+    {
+        $user = static::findOne(['full_name' => $this->full_name]);
+        if ($user) {
+            
+            $userDetail = UserDetail::findOne(['user_id' => $user->id, 'dob' => $this->dob, 'college' => $this->college, 'academic_year' => $this->academic_year]);
+            
+            if ($userDetail) {
+                $this->addError('full_name', 'Already applied.');
+            }
+        }
+    }
+
+    public function attributeLabels()
+    {
         return [
         ];
     }
@@ -81,14 +107,16 @@ class User extends ActiveRecord implements IdentityInterface {
     /**
      * @inheritdoc
      */
-    public static function findIdentity($id) {
+    public static function findIdentity($id)
+    {
         return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
      * @inheritdoc
      */
-    public static function findIdentityByAccessToken($token, $type = null) {
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
         throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
     }
 
@@ -98,7 +126,8 @@ class User extends ActiveRecord implements IdentityInterface {
      * @param string $username
      * @return static|null
      */
-    public static function findByUsername($username) {
+    public static function findByUsername($username)
+    {
         return static::findOne(['email' => $username, 'status' => self::STATUS_ACTIVE]);
     }
 
@@ -108,7 +137,8 @@ class User extends ActiveRecord implements IdentityInterface {
      * @param string $token password reset token
      * @return static|null
      */
-    public static function findByPasswordResetToken($token) {
+    public static function findByPasswordResetToken($token)
+    {
         if (!static::isPasswordResetTokenValid($token)) {
             return null;
         }
@@ -125,7 +155,8 @@ class User extends ActiveRecord implements IdentityInterface {
      * @param string $token password reset token
      * @return boolean
      */
-    public static function isPasswordResetTokenValid($token) {
+    public static function isPasswordResetTokenValid($token)
+    {
         if (empty($token)) {
             return false;
         }
@@ -138,21 +169,24 @@ class User extends ActiveRecord implements IdentityInterface {
     /**
      * @inheritdoc
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->getPrimaryKey();
     }
 
     /**
      * @inheritdoc
      */
-    public function getAuthKey() {
+    public function getAuthKey()
+    {
         return $this->auth_key;
     }
 
     /**
      * @inheritdoc
      */
-    public function validateAuthKey($authKey) {
+    public function validateAuthKey($authKey)
+    {
         return $this->getAuthKey() === $authKey;
     }
 
@@ -162,7 +196,8 @@ class User extends ActiveRecord implements IdentityInterface {
      * @param string $password password to validate
      * @return boolean if password provided is valid for current user
      */
-    public function validatePassword($password) {
+    public function validatePassword($password)
+    {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
@@ -171,32 +206,37 @@ class User extends ActiveRecord implements IdentityInterface {
      *
      * @param string $password
      */
-    public function setPassword($password) {
+    public function setPassword($password)
+    {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
 
     /**
      * Generates "remember me" authentication key
      */
-    public function generateAuthKey() {
+    public function generateAuthKey()
+    {
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
     /**
      * Generates new password reset token
      */
-    public function generatePasswordResetToken() {
+    public function generatePasswordResetToken()
+    {
         $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
 
     /**
      * Removes password reset token
      */
-    public function removePasswordResetToken() {
+    public function removePasswordResetToken()
+    {
         $this->password_reset_token = null;
     }
 
-    public function getTitleLabels() {
+    public function getTitleLabels()
+    {
         return [
             self::TITLE_MR => 'Mr',
             self::TITLE_MRS => 'Mrs',
@@ -206,36 +246,42 @@ class User extends ActiveRecord implements IdentityInterface {
         ];
     }
 
-    public function getTitleLabel() {
+    public function getTitleLabel()
+    {
         return isset($this->getTitleLabels()[$this->title]) ? $this->getTitleLabels()[$this->title] : '';
     }
 
-    public function getIsAdminLabels() {
+    public function getIsAdminLabels()
+    {
         return [
             self::IS_ADMIN_YES => 'Yes',
             self::IS_ADMIN_NO => 'No',
         ];
     }
 
-    public function getIsAdminLabel() {
+    public function getIsAdminLabel()
+    {
         return $this->getIsAdminLabels()[$this->is_admin];
     }
 
-    public function getStatusLabels() {
+    public function getStatusLabels()
+    {
         return [
             self::STATUS_ACTIVE => 'Active',
             self::STATUS_INACTIVE => 'Inactive',
         ];
     }
 
-    public function getStatusLabel() {
+    public function getStatusLabel()
+    {
         return $this->getStatusLabels()[$this->status];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUserDetail() {
+    public function getUserDetail()
+    {
         return $this->hasOne(UserDetail::className(), ['user_id' => 'id']);
     }
 

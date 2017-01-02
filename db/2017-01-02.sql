@@ -1,0 +1,1 @@
+ALTER TABLE `reg_user_detail` ADD `college` VARCHAR(50)  NOT NULL  DEFAULT ''  AFTER `boc_branch`;

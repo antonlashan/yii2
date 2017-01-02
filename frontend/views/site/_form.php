@@ -41,21 +41,27 @@ $this->registerJs(
         <div class="col-md-6">
             <?= $form->field($userDetail, 'initials')->textInput(['maxlength' => true, 'placeholder' => 'Ex: T M T N M K Tennakoon']) ?>
         </div>
+
         <div class="col-md-6">
-            <?= $form->field($userDetail, 'gender')->dropDownList($userDetail->getGenderLabels(), ['prompt' => '- select gender -']) ?>
+            <div class="col-md-6">
+                <?= $form->field($userDetail, 'gender')->dropDownList($userDetail->getGenderLabels(), ['prompt' => '- select gender -']) ?>
+            </div>
+            <div class="col-md-6">
+                <?=
+                $form->field($userDetail, 'dob')->widget(
+                        DatePicker::className(), [
+                    'clientOptions' => [
+                        'autoclose' => true,
+                        'format' => 'yyyy-mm-dd',
+                        'startView' => 'decade',
+                        'startDate' => date("Y-m-d", $batch->getRestrictedTimestamp()),
+                    ]
+                ])
+                ?>
+            </div>
         </div>
         <div class="col-md-6">
-            <?=
-            $form->field($userDetail, 'dob')->widget(
-                    DatePicker::className(), [
-                'clientOptions' => [
-                    'autoclose' => true,
-                    'format' => 'yyyy-mm-dd',
-                    'startView' => 'decade',
-                    'startDate' => date("Y-m-d", $batch->getRestrictedTimestamp()),
-                ]
-            ])
-            ?>
+            <?= $form->field($userDetail, 'college') ?>
         </div>
         <div class="col-md-6">
             <?= $form->field($userDetail, 'address')->textarea() ?>
@@ -110,7 +116,7 @@ $this->registerJs(
         <div class="col-md-12">
             <p class="help-block">If you have a "Rankekulu" or "14+plus" account at the Bank of Ceylon, Enter the account number and the BOC Branch.</p>
             <div class="row">
-                
+
                 <div class="col-md-6">
                     <?= $form->field($userDetail, 'boc_account_no')->textInput(['maxlength' => true]) ?>
                 </div>

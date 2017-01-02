@@ -25,6 +25,9 @@ $this->params['breadcrumbs'][] = $this->title;
         border: 1px solid black;
         <?= ($pdf ? 'font-size: 0.8em;' : '') ?>
     }
+    table th {
+        font-weight: 500;
+    }
     @page { margin: 10px 10px 10px 20px; }
     body { margin: 10px 10px 10px 20px; }
 </style>
@@ -36,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <tbody>
                         <tr>
                             <th width="25%"><?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/logo.png') ?></th>
-                            <th width="50%" align="center" class="text-center"><?= strtoupper(Yii::$app->name . ' - ' . $batch->year . ' Admission') ?><br/><?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/boc-small.png') ?></th>
+                            <th width="50%" align="center" class="text-center"><?= strtoupper(Yii::$app->name . ' - ' . $batch->year) ?><br/><strong>Institute of Physics</strong><br/><?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/boc-small.png') ?><br>ADMISSION</th>
                     <th width="25%" class="text-right"><?= Html::img('@web' . ($pdf ? 'root' : '') . '/img/default_avatar.png') ?></th>
         </tr>
     </tbody>
@@ -60,6 +63,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <td><?= $user->userDetail->reg_no ?></td>
     <td><?= $user->userDetail->getAttributeLabel('gender') ?></td>
     <td><?= $user->userDetail->getGenderLabel() ?></td>
+</tr>
+<tr>
+    <td><?= $user->userDetail->getAttributeLabel('college') ?></td>
+    <td colspan="3"><?= $user->userDetail->college ?></td>
 </tr>
 <tr>
     <td><?= $user->userDetail->getAttributeLabel('dob') ?></td>

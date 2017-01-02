@@ -74,14 +74,23 @@ class SiteController extends Controller {
      */
     public function actionCreate()
     {
-        $model = new User();
+        $model = new User(['scenario'=>User::SCENARIO_REGISTRATION]);
         $userDetail = new UserDetail(['scenario' => UserDetail::SCENARIO_REGISTRATION]);
+        
+        if (($batch = Batch::getCurrentBatch()) === null) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
         $userDetail->payment_mathod = UserDetail::PAYMENT_M_BANK;
 
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post()) && $userDetail->load(Yii::$app->request->post())) {
 
             $model->is_admin = User::IS_ADMIN_NO;
             $model->status = User::STATUS_INACTIVE;
+            
+            $model->academic_year = $batch->year;
+            $model->dob = $userDetail->dob;
+            $model->college = $userDetail->college;
 
             if ($model->save()) {
 
@@ -94,9 +103,7 @@ class SiteController extends Controller {
             }
         }
 
-        if (($batch = Batch::getCurrentBatch()) === null) {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
+        
         $examCenters = ArrayHelper::map(BatchExamCenters::find()->where(['batch_id' => $batch->id])->asArray()->all(), 'id', 'name');
 
         return $this->render('create-student', [
