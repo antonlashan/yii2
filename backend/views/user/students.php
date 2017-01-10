@@ -35,8 +35,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 [
                     'attribute' => 'status',
+                    'filter' => Html::activeDropDownList($searchModel, 'gender', $searchModel->getGenderLabels(), ['class' => 'form-control', 'prompt' => 'Select status']),
                     'value' => function($data) {
                         return $data->getGenderLabel();
+                    }
+                ],
+                [
+                    'label' => 'Medium',
+                    'filter' => Html::activeDropDownList($searchModel, 'medium', $searchModel->getMediumLabels(), ['class' => 'form-control', 'prompt' => 'Select medium']),
+                    'value' => function($data) {
+                        return $data->getMediumLabel();
                     }
                 ],
                 'telephone',
@@ -49,6 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'payment_date',
                 'boc_account_no',
                 'boc_branch',
+                'college',
                 [
                     'class' => 'yii\grid\ActionColumn',
                     'template' => '{view} {update} {delete}',

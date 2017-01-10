@@ -107,7 +107,7 @@ class UserDetail extends \yii\db\ActiveRecord {
             'payment_mathod' => 'Payment Method',
             'payment_date' => 'Payment Date',
             'bank_branch' => 'Bank Branch',
-            'address' => 'Address',
+            'address' => 'Home address',
             'boc_account_no' => 'BOC Account No',
             'boc_branch' => 'Boc Branch',
             'college' => 'College',

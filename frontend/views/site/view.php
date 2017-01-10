@@ -71,8 +71,8 @@ $this->params['breadcrumbs'][] = $this->title;
 <tr>
     <td><?= $user->userDetail->getAttributeLabel('dob') ?></td>
     <td><?= $user->userDetail->dob ?></td>
-    <td>Age as at <?= date("d F", strtotime($batch->age_as_at)) ?></td>
-    <td><?= $batch->getAgeAsAt($user->userDetail->dob) ?></td>
+    <td><?= $user->getAttributeLabel('email') ?></td>
+    <td><?= $user->email ?></td>
 </tr>
 <tr>
     <td><?= $user->userDetail->getAttributeLabel('exam_center_id') ?></td>

@@ -43,21 +43,23 @@ $this->registerJs(
         </div>
 
         <div class="col-md-6">
-            <div class="col-md-6">
-                <?= $form->field($userDetail, 'gender')->dropDownList($userDetail->getGenderLabels(), ['prompt' => '- select gender -']) ?>
-            </div>
-            <div class="col-md-6">
-                <?=
-                $form->field($userDetail, 'dob')->widget(
-                        DatePicker::className(), [
-                    'clientOptions' => [
-                        'autoclose' => true,
-                        'format' => 'yyyy-mm-dd',
-                        'startView' => 'decade',
-                        'startDate' => date("Y-m-d", $batch->getRestrictedTimestamp()),
-                    ]
-                ])
-                ?>
+            <div class="row">
+                <div class="col-md-6">
+                    <?= $form->field($userDetail, 'gender')->dropDownList($userDetail->getGenderLabels(), ['prompt' => '- select gender -']) ?>
+                </div>
+                <div class="col-md-6">
+                    <?=
+                    $form->field($userDetail, 'dob')->widget(
+                            DatePicker::className(), [
+                        'clientOptions' => [
+                            'autoclose' => true,
+                            'format' => 'yyyy-mm-dd',
+                            'startView' => 'decade',
+                            'startDate' => date("Y-m-d", $batch->getRestrictedTimestamp()),
+                        ]
+                    ])
+                    ?>
+                </div>
             </div>
         </div>
         <div class="col-md-6">
@@ -129,7 +131,8 @@ $this->registerJs(
 
     </div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
+            <p class="text-danger">Do not confirm unless you are sure that all entered information are correct.</p>
             <?= $form->field($userDetail, 'confirm')->checkbox() ?>
         </div>
     </div>
